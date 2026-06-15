@@ -4,6 +4,9 @@ Esta guía está escrita en lenguaje sencillo para que cualquier persona pueda
 entender **qué hace** Sync Agent, **para qué sirve** y **cómo usarlo paso a
 paso**, aunque no seas experto en programación.
 
+> ✅ **No necesitas instalar Go ni saber programar.** El programa se instala
+> como una aplicación lista para usar, con un solo comando.
+
 ---
 
 ## 1. ¿Qué es y para qué sirve? (en palabras simples)
@@ -70,7 +73,7 @@ conseguirlos.
 
 ---
 
-## 4. Preparación paso a paso
+## 4. Preparación en GitHub (paso a paso)
 
 ### Paso 4.1 — Crear el Gist (el almacén en la nube)
 1. Entra a 👉 https://gist.github.com
@@ -94,16 +97,47 @@ conseguirlos.
 
 > 🔒 **Importante sobre seguridad:** ese token es como una llave de tu cuenta.
 > Nunca lo compartas, no lo envíes por chat ni correo, y no lo subas a ningún
-> repositorio público. El proyecto ya está configurado para no subirlo por
-> accidente (`.gitignore`).
+> repositorio público.
 
 ---
 
-## 5. Configurar el agente
+## 5. Instalar el programa (un solo comando)
 
-1. En la carpeta del proyecto verás un archivo llamado `config.example.json`.
-   Haz una copia y renómbrala a `config.json`.
-2. Abre `config.json` con cualquier editor de texto y rellénalo con tus datos:
+No necesitas descargar nada manualmente ni instalar Go. Abre una terminal y
+pega el comando según tu sistema operativo:
+
+### 🪟 Windows (PowerShell)
+```powershell
+iwr -useb https://raw.githubusercontent.com/geomark27/sync-agent/main/scripts/install.ps1 | iex
+```
+
+### 🐧 Linux / 🍎 macOS (Terminal)
+```bash
+curl -fsSL https://raw.githubusercontent.com/geomark27/sync-agent/main/scripts/install.sh | bash
+```
+
+Esto descarga el programa ya listo, lo instala y lo deja disponible como el
+comando `sync-agent`. **Cierra y vuelve a abrir la terminal** al terminar (para
+que reconozca el nuevo comando).
+
+> ✅ Para comprobar que quedó instalado, escribe: `sync-agent version`
+
+---
+
+## 6. Configurar el agente
+
+### Paso 6.1 — Crear el archivo de configuración
+Escribe en la terminal:
+
+```bash
+sync-agent init
+```
+
+Esto crea un archivo de configuración vacío y te dice exactamente dónde quedó
+(por ejemplo, en Linux: `~/.config/sync-agent/config.json`).
+
+### Paso 6.2 — Rellenar tus datos
+Abre ese archivo con cualquier editor de texto y complétalo así:
 
 ```json
 {
@@ -132,22 +166,18 @@ conseguirlos.
 
 ---
 
-## 6. Poner en marcha el agente
+## 7. Poner en marcha el agente
 
-Abre una terminal en la carpeta del proyecto y ejecuta:
+Escribe simplemente:
 
 ```bash
-# 1) Compilar el programa (solo la primera vez o tras actualizar)
-go build -o bin/sync-agent ./cmd/daemon
-
-# 2) Iniciar el agente
-./bin/sync-agent --config ./config.json
+sync-agent
 ```
 
 Si todo está bien, verás mensajes como estos:
 
 ```
-🚀 Iniciando Sync Agent...
+🚀 Iniciando Sync Agent v1.0.0...
 📥 actualizado desde la nube: /home/usuario/.zshrc      (si había algo más nuevo en la nube)
 👀 Vigilando 2 archivo(s)...
 ```
@@ -162,16 +192,19 @@ alguno de tus archivos vigilados, verás algo como:
 
 Para **detenerlo de forma segura**, pulsa `Ctrl + C`.
 
+> 💡 **¿Quieres que arranque solo y corra siempre en segundo plano?** Mira la
+> sección 11 ("Dejarlo corriendo automáticamente").
+
 ---
 
-## 7. Usarlo en tu segunda computadora
+## 8. Usarlo en tu segunda computadora
 
-1. Copia el proyecto (o vuélvelo a descargar) en la otra máquina.
-2. Crea ahí también su propio `config.json`, usando **el mismo `gist_token` y
-   `gist_id`** (para que apunte al mismo almacén en la nube).
+1. Instala el programa en la otra máquina con el mismo comando del Paso 5.
+2. Ejecuta `sync-agent init` y edita su `config.json` usando **el mismo
+   `gist_token` y `gist_id`** (para que apunte al mismo almacén en la nube).
 3. En `paths`, pon las rutas tal como existen **en esa computadora** (pueden
    ser distintas si tu usuario o carpetas cambian).
-4. Compila y ejecuta igual que en el Paso 6.
+4. Ejecuta `sync-agent`.
 
 Al arrancar, esta segunda máquina **descargará lo último de la nube** y dejará
 tus archivos al día. ¡Listo!
@@ -181,24 +214,30 @@ tus archivos al día. ¡Listo!
 
 ---
 
-## 8. ¿Qué debes hacer tú? (resumen de tu rol)
+## 9. ¿Qué debes hacer tú? (resumen de tu rol)
 
 ✅ **Sí debes:**
-- Crear una vez tu Gist y tu token.
-- Llenar el `config.json` en cada máquina.
-- Dejar el agente corriendo mientras trabajas.
+- Crear una vez tu Gist y tu token (Paso 4).
+- Instalar con un comando (Paso 5).
+- Llenar el `config.json` en cada máquina (Paso 6).
+- Dejar el agente corriendo mientras trabajas (Paso 7).
 
 ❌ **No tienes que:**
+- Instalar Go ni compilar nada.
 - Copiar archivos manualmente entre computadoras.
 - Hacer `commit`/`pull` a mano.
 - Preocuparte por subir cambios: el agente lo hace solo.
 
 ---
 
-## 9. Preguntas frecuentes y solución de problemas
+## 10. Preguntas frecuentes y solución de problemas
+
+**`sync-agent: command not found` (o "no se reconoce el comando")**
+→ Cierra y vuelve a abrir la terminal después de instalar. En Linux/Mac también
+puedes ejecutar `source ~/.zshrc` (o `source ~/.bashrc`).
 
 **"❌ no se pudo cargar la configuración"**
-→ Revisa que la ruta del `config.json` sea correcta y que el archivo exista.
+→ Aún no creaste el archivo. Ejecuta `sync-agent init`.
 
 **"❌ configuración incompleta: 'gist_token' y 'gist_id' son obligatorios"**
 → Faltó llenar el token o el ID del Gist en tu `config.json`.
@@ -222,7 +261,26 @@ vez cuando sea posible.
 
 ---
 
-## 10. Recordatorio de seguridad
+## 11. Dejarlo corriendo automáticamente (opcional, avanzado)
+
+Por defecto, `sync-agent` corre mientras la terminal esté abierta. Si quieres
+que arranque solo al encender el equipo y siga en segundo plano:
+
+- **Linux (systemd):** crea un servicio de usuario en
+  `~/.config/systemd/user/sync-agent.service` que ejecute la ruta del binario
+  (`~/.local/bin/sync-agent`) y actívalo con
+  `systemctl --user enable --now sync-agent`.
+- **macOS (launchd):** crea un archivo `.plist` en `~/Library/LaunchAgents/`
+  que apunte al binario y cárgalo con `launchctl load`.
+- **Windows:** usa el **Programador de tareas** y crea una tarea que ejecute
+  `sync-agent.exe` "Al iniciar sesión".
+
+Si no estás familiarizado con esto, no pasa nada: basta con abrir una terminal
+y ejecutar `sync-agent` cuando empieces a trabajar.
+
+---
+
+## 12. Recordatorio de seguridad
 
 - Tu `gist_token` es información sensible: trátalo como una contraseña.
 - No lo compartas ni lo subas a repositorios públicos.
@@ -231,6 +289,25 @@ vez cuando sea posible.
 
 ---
 
-¿Dudas o algo no funciona como esperas? Revisa primero la sección 9; la mayoría
+## 13. Para desarrolladores (compilar desde el código)
+
+Esta sección **NO es necesaria para usar el programa**; solo aplica si quieres
+modificar el código o generar tú mismo los ejecutables. Requiere tener
+[Go](https://go.dev/dl/) instalado.
+
+```bash
+make build      # Compila el binario en ./bin/sync-agent
+make run        # Ejecuta en modo desarrollo
+make test       # Corre las pruebas
+make build-all  # Compila para Linux, Windows y Mac
+make release    # Publica una nueva versión en GitHub Releases
+```
+
+Una vez publicada una versión con `make release`, los comandos de instalación
+del Paso 5 (los *one-liners*) descargarán automáticamente ese ejecutable.
+
+---
+
+¿Dudas o algo no funciona como esperas? Revisa primero la sección 10; la mayoría
 de los problemas se resuelven verificando el `config.json`, el token y el ID del
 Gist.

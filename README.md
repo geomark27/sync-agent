@@ -44,6 +44,26 @@ El código sigue el estándar de diseño de proyectos de Go:
 └── pkg/hasher/         # Utilidades criptográficas compartidas
 ```
 
+## ⚡ Instalación rápida (usuario final, sin Go)
+
+El programa se distribuye como un ejecutable listo para usar. **No requiere
+instalar Go.** Instálalo con un solo comando:
+
+**Windows (PowerShell):**
+```powershell
+iwr -useb https://raw.githubusercontent.com/geomark27/sync-agent/main/scripts/install.ps1 | iex
+```
+
+**Linux / macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/geomark27/sync-agent/main/scripts/install.sh | bash
+```
+
+Luego: `sync-agent init` → edita el `config.json` → `sync-agent`.
+
+> 📖 Explicación detallada paso a paso en la **[Guía de Usuario](GUIA_DE_USUARIO.md)**.
+> Los *one-liners* descargan el binario del último [release](https://github.com/geomark27/sync-agent/releases); requieren que exista al menos una versión publicada (`make release`).
+
 ## ⚙️ Configuración
 
 Crea un archivo `config.json` (puedes partir de `config.example.json`). **Nunca lo subas al repositorio**: contiene tu token personal (ya está incluido en `.gitignore`).
@@ -69,17 +89,13 @@ Crea un archivo `config.json` (puedes partir de `config.example.json`). **Nunca 
 
 > **Requisitos previos:** crea un [Gist](https://gist.github.com) (puede ser secreto) y genera un [token personal](https://github.com/settings/tokens) con el scope `gist`.
 
-## 🚀 Compilación y uso
+## 🚀 Uso
 
 ```bash
-# Compilar el binario
-go build -o bin/sync-agent ./cmd/daemon
-
-# Ejecutar (usa por defecto ~/.config/sync-agent/config.json)
-./bin/sync-agent
-
-# O indicando una ruta de configuración explícita
-./bin/sync-agent --config ./config.json
+sync-agent init               # Crea un config.json de ejemplo en la ruta por defecto
+sync-agent                    # Inicia el agente (usa ~/.config/sync-agent/config.json)
+sync-agent --config ./config.json   # Inicia con una configuración específica
+sync-agent version            # Muestra la versión instalada
 ```
 
 Al arrancar, el agente:
@@ -89,11 +105,21 @@ Al arrancar, el agente:
 
 Detén el agente de forma segura con `Ctrl+C` (`SIGINT`/`SIGTERM`).
 
-## 🧪 Pruebas
+## 🛠️ Para desarrolladores (compilar desde el código)
+
+Requiere [Go](https://go.dev/dl/). El `Makefile` automatiza las tareas comunes:
 
 ```bash
-go test ./...
+make build      # Compila el binario en ./bin/sync-agent
+make run        # Ejecuta en modo desarrollo (make run ARGS='--config ./config.json')
+make test       # Ejecuta las pruebas
+make lint       # go fmt + go vet
+make build-all  # Compila para Linux, Windows y macOS (amd64)
+make release    # lint + test + compila + tag + publica binarios en GitHub Releases
 ```
+
+> `make release` sube los binarios al *release* de GitHub; los scripts de
+> instalación rápida descargan justamente esos artefactos.
 
 ## ⚠️ Limitaciones actuales
 
