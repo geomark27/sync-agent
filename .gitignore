@@ -1,0 +1,13 @@
+# Binarios compilados
+/sync-agent
+/daemon
+/bin/
+*.exe
+
+# Configuración local (contiene el token de GitHub: NUNCA subir)
+config.json
+*.local.json
+
+# Sistema operativo / editores
+.DS_Store
+*.swp
