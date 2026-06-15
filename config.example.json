@@ -1,0 +1,9 @@
+{
+  "machine_id": "laptop-personal",
+  "paths": [
+    "/home/usuario/.zshrc",
+    "/home/usuario/.config/zed/settings.json"
+  ],
+  "gist_token": "ghp_reemplaza_con_tu_token_personal",
+  "gist_id": "reemplaza_con_el_id_del_gist_secreto"
+}
